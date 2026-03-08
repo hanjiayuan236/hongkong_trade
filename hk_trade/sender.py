@@ -8,6 +8,8 @@ from typing import List, Optional
 from hk_trade.config import AppConfig
 from hk_trade.utils import parse_json_maybe, split_markdown_chunks
 
+DEFAULT_TELEGRAM_CHUNK = 1200
+
 
 @dataclass
 class SendResult:
@@ -27,8 +29,13 @@ def gateway_healthy(openclaw_bin: str) -> bool:
     return proc.returncode == 0
 
 
-def send_report(text: str, cfg: AppConfig, dry_run: bool = False) -> List[SendResult]:
-    chunks = split_markdown_chunks(text, max_len=3400)
+def send_report(
+    text: str,
+    cfg: AppConfig,
+    dry_run: bool = False,
+    max_chunk_len: int = DEFAULT_TELEGRAM_CHUNK,
+) -> List[SendResult]:
+    chunks = split_markdown_chunks(text, max_len=max_chunk_len)
     results: List[SendResult] = []
 
     for idx, chunk in enumerate(chunks, start=1):

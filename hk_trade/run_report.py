@@ -10,7 +10,7 @@ from hk_trade.collectors.options import collect_options_bundle
 from hk_trade.config import LEVERAGE_MAP, load_config
 from hk_trade.models import ReportContext
 from hk_trade.report import render_report
-from hk_trade.sender import gateway_healthy, send_report
+from hk_trade.sender import DEFAULT_TELEGRAM_CHUNK, gateway_healthy, send_report
 from hk_trade.storage import (
     init_db,
     insert_error,
@@ -92,7 +92,7 @@ def main(argv: list[str] | None = None) -> int:
         insert_error(cfg.db_path, run_id, "collect", warning, None, created_at)
 
     if args.dry_run and not args.send:
-        chunk_count = len(split_markdown_chunks(report_text, max_len=3400))
+        chunk_count = len(split_markdown_chunks(report_text, max_len=DEFAULT_TELEGRAM_CHUNK))
         update_send_status(cfg.db_path, run_id, "dry-run", None)
         print(f"[dry-run] report generated: {report_path}")
         print(f"[dry-run] chunks={chunk_count}, target={cfg.telegram_target}")
