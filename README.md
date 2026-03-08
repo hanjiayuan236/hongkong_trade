@@ -54,10 +54,34 @@ python3 -m hk_trade.install_cron --print
 python3 -m hk_trade.install_cron --install
 ```
 
+重新安装/覆盖（推荐在项目虚拟环境执行）：
+
+```bash
+cd /Users/jiayuanhan/Documents/hongkong_trade
+.venv/bin/python -m hk_trade.install_cron --install
+```
+
 移除本系统 cron 块：
 
 ```bash
 python3 -m hk_trade.install_cron --remove
+```
+
+日常检查：
+
+```bash
+# 查看 cron 是否存在
+crontab -l
+
+# 查看任务运行日志
+tail -f /Users/jiayuanhan/Documents/hongkong_trade/logs/cron.log
+
+# 查看最新报告文件
+ls -t /Users/jiayuanhan/Documents/hongkong_trade/reports/*/*.md | head -1
+
+# 检查/重启 OpenClaw gateway
+openclaw gateway health
+openclaw gateway restart
 ```
 
 ## 测试
