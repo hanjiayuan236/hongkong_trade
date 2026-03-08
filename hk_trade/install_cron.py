@@ -25,12 +25,19 @@ def build_block(repo_root: Path, py_exec: str) -> str:
 
     rows = [
         MARKER_START,
+        "# HK market session (HKT)",
         "CRON_TZ=Asia/Hong_Kong",
         line("30 9 * * 1-5", "intraday"),
         line("0,30 10-11 * * 1-5", "intraday"),
         line("0,30 13-15 * * 1-5", "intraday"),
         line("10 16 * * 1-5", "close"),
         line("0 22 * * *", "daily"),
+        "# US market regular session (ET, FXI/YINN/KWEB/CWEB)",
+        "CRON_TZ=America/New_York",
+        line("30 9 * * 1-5", "intraday"),
+        line("0,30 10-11 * * 1-5", "intraday"),
+        line("0,30 12-15 * * 1-5", "intraday"),
+        line("10 16 * * 1-5", "close"),
         MARKER_END,
     ]
     return "\n".join(rows)

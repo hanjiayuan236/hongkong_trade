@@ -42,6 +42,10 @@ python3 -m hk_trade.run_report --mode daily --send
 
 ## 定时任务
 
+默认会安装两套时段：
+- 港股交易时段（`Asia/Hong_Kong`）
+- 美股常规交易时段（`America/New_York`，适用于 FXI/YINN/KWEB/CWEB）
+
 预览将写入的 crontab：
 
 ```bash
