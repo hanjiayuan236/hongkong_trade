@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.DS_Store
+.env
+.venv/
+.pytest_cache/
+
+# Runtime artifacts
+data/*.db
+reports/
+logs/

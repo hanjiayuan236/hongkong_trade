@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hk-trade-reporter"
+version = "0.1.0"
+description = "Hong Kong ETF and options reporting with Telegram delivery"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+  { name = "Codex" }
+]
+
+[tool.setuptools]
+packages = ["hk_trade", "hk_trade.collectors"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
