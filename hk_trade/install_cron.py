@@ -15,29 +15,17 @@ def build_block(repo_root: Path, py_exec: str) -> str:
     log_file = repo_root / "logs" / "cron.log"
     log_file.parent.mkdir(parents=True, exist_ok=True)
 
-    def line(expr: str, mode: str) -> str:
-        cmd = (
-            f"cd {shlex.quote(str(repo_root))} && "
-            f"{shlex.quote(py_exec)} -m hk_trade.run_report --mode {mode} --send "
-            f">> {shlex.quote(str(log_file))} 2>&1"
-        )
-        return f"{expr} {cmd}"
+    cmd = (
+        "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin; "
+        f"cd {shlex.quote(str(repo_root))} && "
+        f"{shlex.quote(py_exec)} -m hk_trade.cron_dispatch "
+        f">> {shlex.quote(str(log_file))} 2>&1"
+    )
 
     rows = [
         MARKER_START,
-        "# HK market session (HKT)",
-        "CRON_TZ=Asia/Hong_Kong",
-        line("30 9 * * 1-5", "intraday"),
-        line("0,30 10-11 * * 1-5", "intraday"),
-        line("0,30 13-15 * * 1-5", "intraday"),
-        line("10 16 * * 1-5", "close"),
-        line("0 22 * * *", "daily"),
-        "# US market regular session (ET, FXI/YINN/KWEB/CWEB)",
-        "CRON_TZ=America/New_York",
-        line("30 9 * * 1-5", "intraday"),
-        line("0,30 10-11 * * 1-5", "intraday"),
-        line("0,30 12-15 * * 1-5", "intraday"),
-        line("10 16 * * 1-5", "close"),
+        "# Run dispatcher every minute; dispatcher itself decides whether to send",
+        f"* * * * * {cmd}",
         MARKER_END,
     ]
     return "\n".join(rows)

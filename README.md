@@ -20,6 +20,12 @@
 cp .env.example .env
 ```
 
+建议在 `.env` 显式设置 `OPENCLAW_BIN` 为绝对路径（避免 cron 的 PATH 找不到命令）：
+
+```bash
+OPENCLAW_BIN=/opt/homebrew/bin/openclaw
+```
+
 2. 安装依赖（建议在虚拟环境）：
 
 ```bash
@@ -42,9 +48,12 @@ python3 -m hk_trade.run_report --mode daily --send
 
 ## 定时任务
 
-默认会安装两套时段：
-- 港股交易时段（`Asia/Hong_Kong`）
-- 美股常规交易时段（`America/New_York`，适用于 FXI/YINN/KWEB/CWEB）
+macOS 自带的 vixie cron 对 `CRON_TZ` 支持有限，因此项目采用“调度器”方案：
+- `crontab` 每 10 分钟触发一次 `hk_trade.cron_dispatch`
+- 调度器内部按时区判断是否真正执行发送：
+  - 港股交易时段（`Asia/Hong_Kong`）
+  - 美股常规交易时段（`America/New_York`，适用于 FXI/YINN/KWEB/CWEB）
+  - 港股 22:00 日报
 
 预览将写入的 crontab：
 
@@ -87,6 +96,8 @@ ls -t /Users/jiayuanhan/Documents/hongkong_trade/reports/*/*.md | head -1
 openclaw gateway health
 openclaw gateway restart
 ```
+
+说明：调度器每 10 分钟会写一条 `[dispatch] tick no-task ...` 心跳日志，表示 cron 正常触发但当前不在发报时间窗。
 
 ## 测试
 
